@@ -41,22 +41,25 @@
                 if(saat<="17:00"):
                     metin="{} İçin Bugünün Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}". #Gunluk hava raporu isterse saat 5 den sonra gün içinin bir anlamı olmaz 
                           format(cevap,hava[0],gunduz[0],gece[0]))             #O yüzden akşam 5 sonrası sadece gece raporuna bakmalıyız bakmalıyız
+                    self.seslendirme(metin)
                 else:
                     metin="{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".
                           format(cevap,gece[0]))
+                    self.seslendirme(metin)
 
             def yarinki_hava(self):
                 metin="{} İçin Yarınki Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}".
                         format( cevap, hava[1], gunduz[1], gece[1]))
+                self.seslendirme(metin)
 
             def bes_gunluk(self):
                     metin="Bugün İçin  Hava Durumu ŞöyleHava:{} Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} Yarın İçin  Hava Tahmini Şöylen Hava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle Hava:{} Gündüz Sıcaklığı:{} Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{} Gece Sıcaklığı:{}".
                         format(hava[0], gunduz[0], gece[0], hava[1], gunduz[1], gece[1],
                                gunler[2], hava[2], gunduz[2], gece[2], gunler[3], hava[3],
-                               gunduz[3], gece[3]))
+                               gunduz[3], gece[3]))  
+                    self.seslendirme(metin)
 
-
-            self.seslendirme(birleştirme)
+            
 
    
 
