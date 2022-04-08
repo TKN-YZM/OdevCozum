@@ -11,9 +11,14 @@
             gece_sicakliklari = soup.find_all("div",
                                               {"class": "daily-report-tab-content-pane-item-box-bottom-degree-small"})
             hava_durumları = soup.find_all("div", {"class": "daily-report-tab-content-pane-item-text"})
+            
+            gun_isimleri=soup.find_all("div",{"class":"daily-report-tab-content-pane-item-date"}) #Gün isimlerini internetten çekiyoruz
+            
             gunduz = []
             gece = []
             hava = []
+            gunler=[]  #Gunler isminde liste yaptık ve içine çektiğimiz verileri aktardık
+            
             for x in gunduz_sicakliklari:
                 x = x.text
                 gunduz.append(x)
@@ -27,40 +32,32 @@
             self.seslendirme("Günlük yarın ya da haftalık raporları mı istiyorsunuz?")
             cevap2=self.ses_kayit()
             
-            if(cevap2=="günlük"):
-                gunluk_hava()
+           
+            saat=datetime.now().strftime("%H:%M")
+            anlik_metin=" " #bugünün metini bu olacak her şeyden önce saat kontrolü yapıyoruz eğer akşam 5 den sonra ise sadece bugünün gece raporlarını veriyoruz
+            if(saat<="17:00"):
+                alnik_metin="{} İçin Bugünün Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}". #Gunluk hava raporu isterse saat 5 den sonra gün içinin bir anlamı olmaz 
+                    format(cevap,hava[0],gunduz[0],gece[0]))             #O yüzden akşam 5 sonrası sadece gece raporuna bakmalıyız bakmalıyız                 
+             else:
+                 anlik_metin="{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".format(cevap,gece[0]))
+                                      
+             yarinki_metin="{} İçin Yarınki Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}".format( cevap, hava[1], gunduz[1], gece[1]))
                 
-            else if(cevap2=="yarınki hava" or cevap2=="yarın" or cevap2=="yarının durumu"):
-                yarinki_hava()
-               
-            else if(cevap2=="beş günlük" or cevap2=="beş gün"):
-                bes_gunluk()
-            
-            def gunluk_hava(self):
-                saat=datetime.now().strftime("%H:%M")
-                if(saat<="17:00"):
-                    metin="{} İçin Bugünün Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}". #Gunluk hava raporu isterse saat 5 den sonra gün içinin bir anlamı olmaz 
-                          format(cevap,hava[0],gunduz[0],gece[0]))             #O yüzden akşam 5 sonrası sadece gece raporuna bakmalıyız bakmalıyız
-                    self.seslendirme(metin)
-                else:
-                    metin="{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".
-                          format(cevap,gece[0]))
-                    self.seslendirme(metin)
-
-            def yarinki_hava(self):
-                metin="{} İçin Yarınki Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}".
-                        format( cevap, hava[1], gunduz[1], gece[1]))
-                self.seslendirme(metin)
-
-            def bes_gunluk(self):
-                    metin="Bugün İçin  Hava Durumu ŞöyleHava:{} Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} Yarın İçin  Hava Tahmini Şöylen Hava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle Hava:{} Gündüz Sıcaklığı:{} Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{} Gece Sıcaklığı:{}".
+             besgunluk_metin="Bugün İçin  Hava Durumu ŞöyleHava:{} Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} Yarın İçin  Hava Tahmini Şöylen Hava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle Hava:{} Gündüz Sıcaklığı:{} Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{} Gece Sıcaklığı:{}".
                         format(hava[0], gunduz[0], gece[0], hava[1], gunduz[1], gece[1],
                                gunler[2], hava[2], gunduz[2], gece[2], gunler[3], hava[3],
                                gunduz[3], gece[3]))  
-                    self.seslendirme(metin)
 
             
-
+            if(cevap2=="günlük"):
+                self.seslendirme(anlik_metin)
+                
+            else if(cevap2=="yarınki hava" or cevap2=="yarın" or cevap2=="yarının durumu"):
+                self.seslendirme(yarinki_metin)
+               
+            else if(cevap2=="beş günlük" or cevap2=="beş gün"):
+                self.seslendirme( besgunluk_metin)
+            
    
 
         
