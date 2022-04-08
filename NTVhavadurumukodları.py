@@ -1,91 +1,63 @@
-import time
-import requests
-from bs4 import BeautifulSoup
-from datetime import datetime
+  elif "hava durumu tahmini" in gelen_ses or "hava durumu" in gelen_ses:
+            self.seslendirme("hangi şehrin hava durumunu istersiniz")
+            cevap=self.ses_kayit()
 
-class HavaDurumu():
-    def HavaRaporlari(self):
-        self.sehir=input("Lutfen Hava Raporları İçin Şehir Giriniz: ")
-        url = "https://www.ntvhava.com/{}-hava-durumu".format(self.sehir)
-        request = requests.get(url)
-        html_icerigi = request.content
-        soup = BeautifulSoup(html_icerigi, "html.parser")
-        gunduz_sicakliklari = soup.find_all("div",
-                                            {"class": "daily-report-tab-content-pane-item-box-bottom-degree-big"})
-        gece_sicakliklari = soup.find_all("div",
-                                          {"class": "daily-report-tab-content-pane-item-box-bottom-degree-small"})
-        hava_durumları = soup.find_all("div", {"class": "daily-report-tab-content-pane-item-text"})
+            url = "https://www.ntvhava.com/{}-hava-durumu".format(cevap)
+            request = requests.get(url)
+            html_icerigi = request.content
+            soup = BeautifulSoup(html_icerigi, "html.parser")
+            gunduz_sicakliklari = soup.find_all("div",
+                                          {"class": "daily-report-tab-content-pane-item-box-bottom-degree-big"})
+            gece_sicakliklari = soup.find_all("div",
+                                              {"class": "daily-report-tab-content-pane-item-box-bottom-degree-small"})
+            hava_durumları = soup.find_all("div", {"class": "daily-report-tab-content-pane-item-text"})
+            gunduz = []
+            gece = []
+            hava = []
+            for x in gunduz_sicakliklari:
+                x = x.text
+                gunduz.append(x)
+            for y in gece_sicakliklari:
+                y = y.text
+                gece.append(y)
+            for z in hava_durumları:
+                z = z.text
+                hava.append(z)
 
-        gun_isimleri=soup.find_all("div",{"class":"daily-report-tab-content-pane-item-date"})
+            self.seslendirme("Günlük yarın ya da haftalık raporları mı istiyorsunuz?")
+            cevap2=self.ses_kayit()
+            
+            if(cevap2=="günlük"):
+                gunluk_hava()
+                
+            else if(cevap2=="yarınki hava" or cevap2=="yarın" or cevap2=="yarının durumu"):
+                yarinki_hava()
+               
+            else if(cevap2=="beş günlük" or cevap2=="beş gün"):
+                bes_gunluk()
+            
+            def gunluk_hava(self):
+                saat=datetime.now().strftime("%H:%M")
+                if(saat<="17:00"):
+                    metin="{} İçin Bugünün Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}". #Gunluk hava raporu isterse saat 5 den sonra gün içinin bir anlamı olmaz 
+                          format(cevap,hava[0],gunduz[0],gece[0]))             #O yüzden akşam 5 sonrası sadece gece raporuna bakmalıyız bakmalıyız
+                else:
+                    metin="{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".
+                          format(cevap,gece[0]))
 
-        self.gunduz = []
-        self.gece = []
-        self.hava = []
-        self.gunler=[]
+            def yarinki_hava(self):
+                metin="{} İçin Yarınki Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}".
+                        format( cevap, hava[1], gunduz[1], gece[1]))
 
-        for x in gunduz_sicakliklari:
-            x = x.text
-            x = x.strip()
-            self.gunduz.append(x)
-
-        for y in gece_sicakliklari:
-            y = y.text
-            y = y.strip()
-            y = y.replace("/", " ")
-            self.gece.append(y)
-
-        for z in hava_durumları:
-            z = z.text
-            z = z.strip()
-            self.hava.append(z)
-
-        for a in gun_isimleri:
-            a=a.text
-            a=a[0:3]
-            if(a=="Cmt"):
-                a="Cumartesi"
-            elif(a=="Paz"):
-                a="Pazar"
-            elif(a=="Pzt"):
-                a="Pazartesi"
-            elif(a=="Sal"):
-                a="Salı"
-            elif(a=="Çar"):
-                a="Çarşamba"
-            elif(a=="Per"):
-                a="Perşembe"
-            elif(a=="Cum"):
-                a="Cuma"
-            self.gunler.append(a)
+            def bes_gunluk(self):
+                    metin="Bugün İçin  Hava Durumu ŞöyleHava:{} Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} Yarın İçin  Hava Tahmini Şöylen Hava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle Hava:{} Gündüz Sıcaklığı:{} Gece Sıcaklığı:{} {} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{} Gece Sıcaklığı:{}".
+                        format(hava[0], gunduz[0], gece[0], hava[1], gunduz[1], gece[1],
+                               gunler[2], hava[2], gunduz[2], gece[2], gunler[3], hava[3],
+                               gunduz[3], gece[3]))
 
 
-    def gunluk_hava(self):
-        saat=datetime.now().strftime("%H:%M")
-        if(saat<="17:00"):
-            print("--------------------------------------------------\n{} İçin Bugünün Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------".
-                  format(self.sehir.upper(),self.hava[0],self.gunduz[0],self.gece[0]))
-        else:
-            print("--------------------------------------------------\n{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}\n--------------------------------------------------".
-                  format(self.sehir,self.gece[0]))
+            self.seslendirme(birleştirme)
 
-    def yarinki_hava(self):
-        print("--------------------------------------------------\n{} İçin Yarınki Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------".
-                format( self.sehir.upper(), self.hava[1], self.gunduz[1], self.gece[1]))
+   
 
-    def bes_gunluk(self):
-        if(time.strftime("%A")=="Sunday"):
-            print(
-                "--------------------------------------------------\nBugün İçin  Hava Durumu Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\nYarın İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n{} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n{} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n--------------------------------------------------\n".
-                format(self.hava[0], self.gunduz[0], self.gece[0], self.hava[1], self.gunduz[1], self.gece[1],
-                       self.gunler[2], self.hava[2], self.gunduz[2], self.gece[2], self.gunler[3], self.hava[3],
-                       self.gunduz[3], self.gece[3]))
-
-        else:
-            print("--------------------------------------------------\nBugün İçin  Hava Durumu Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\nYarın İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n{} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n{} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n--------------------------------------------------\n--------------------------------------------------\n{} Günü İçin  Hava Tahmini Şöyle\nHava:{}\nGündüz Sıcaklığı:{}\nGece Sıcaklığı:{}\n-------------------------------------------------- ".
-              format(self.hava[0],self.gunduz[0],self.gece[0],self.hava[1], self.gunduz[1], self.gece[1],self.gunler[2],self.hava[2],self.gunduz[2],self.gece[2],self.gunler[3],self.hava[3],self.gunduz[3],self.gece[3],self.gunler[4],self.hava[4],self.gunduz[4],self.gece[4]))
-
-
-hava=HavaDurumu()
-hava.HavaRaporlari()
-hava.bes_gunluk()
-
+        
