@@ -58,7 +58,7 @@ if (saat <= "17:00"):
                                                                                                          gunduz[0],
                                                                                                          gece[0])
 
-    anlik_metin = "{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".format(cevap, gece[0])
+ else:anlik_metin = "{} İçin Bugünün Hava Tahmini Şöyle\nGece Sıcaklığı:{}".format(cevap, gece[0])
 
 yarinki_metin = "{} İçin Yarınki Hava Tahmini ŞöyleHava:{}Gündüz Sıcaklığı:{}Gece Sıcaklığı:{}".format(cevap, hava[1],
                                                                                                        gunduz[1],
